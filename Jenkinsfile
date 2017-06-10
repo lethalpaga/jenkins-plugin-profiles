@@ -1,29 +1,23 @@
+def name = "test"
+if(env.BRANCH_NAME == "master") {
+    name = "master"
+}
+
 pipeline {
-    // This is what we're trying to achieve:
-    // profiles {
-    //     profile("test") {
-    //         environment {
-    //         }
+  agent any
 
-    //         parameters {
-    //         }
-    //     }
+  parameters {
+      string(name: 'PERSON', defaultValue: name, description: 'Who should I say hello to?')
+  }
 
-    //     select {
-    //         script {
-    //             return "test"
-    //         }
-    //     }
-    // }
-
-    agent any
-
-    stages {
-
-        stage("Test"){
-            steps {
-                sh "echo Test successful"
-            }
+  stages {
+    stage('Test') {
+      steps {
+        sh 'echo Test successful'
+        catchError() {
+          echo "This is a test ${params.PERSON}"
         }
+      }
     }
+  }
 }
